@@ -65,4 +65,24 @@ def available(request):
     return render(request, "homepage/available.html", context)
 ```
 
-### 
+Now we can do the requests for the database. (Be aware of the new import!) (More explanation below)
+
+### homepage/views.py
+```python
+from django.shortcuts import get_object_or_404, render
+...
+def available(request):
+    selected_courses = []
+    if request.method == "POST":
+        selected_courses = [
+            get_object_or_404(CourseDataBase, pk=course_id).name
+            for course_id in request.POST.getlist("courses")
+        ]
+    context = {"selected": selected_courses}
+    return render(request, "homepage/available.html", context)
+```
+
+Explanation of above function:
+1. I initialize selected_courses so that I am guaranteed to have a list no matter.
+2. I then check if the method is POST. This is a way to chech whether the reason we are on this page is through clicking a form with "post" method.
+3. For all of the courses we get from that post action (request.POST.getlist("courses")), I get the name of the CourseDataBase object with the appropriate course ID. The "courses" comes from "homepage/templates/homepage/index.html" where all checkboxes have the name "courses".
