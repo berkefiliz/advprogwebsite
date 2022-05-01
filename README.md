@@ -20,20 +20,27 @@ Notice how A and B have the Group ID 1 while C and D have the Group ID 2. At the
 The implementation should be as folowing:
 - I created a new column named group_id
 - I set the default value to 1, so that you do not have to fill it in every time.
-- **If you already have a lot of OrTable rows, you will need to do a migration.** If there are 2-3 entries, the effort is not worth it. Just delete the entries, copy the code, then run it. You can find migration stuff on [Django Tutorials](https://docs.djangoproject.com/en/4.0/intro/tutorial02/).
+- **If you already have a lot of OrTable rows, you will need to do a migration.** If there are 2-3 entries, the effort is not worth it. Just delete the entries, copy the code, then run it. You can find migration stuff on [Django Tutorials](https://docs.djangoproject.com/en/4.0/intro/tutorial02/). **ALSO NOTICE THE CHANGE FROM PROTECT TO CASCADE!**
 
 ### homepage/models.py
 ```python
 ...
 class OrTable(models.Model):
     prereq = models.ForeignKey(
-        CourseDataBase, on_delete=models.PROTECT, related_name="prereq_or"
+        CourseDataBase, on_delete=models.CASCADE, related_name="prereq_or"
     )
     course = models.ForeignKey(
-        CourseDataBase, on_delete=models.PROTECT, related_name="course_or"
+        CourseDataBase, on_delete=models.CASCADE, related_name="course_or"
     )
     group_id = models.IntegerField(default=1)
-...
+
+class AndTable(models.Model):
+    prereq = models.ForeignKey(
+        CourseDataBase, on_delete=models.CASCADE, related_name="prereq_and"
+    )
+    course = models.ForeignKey(
+        CourseDataBase, on_delete=models.CASCADE, related_name="course_and"
+    )
 ```
 
 ### vterm (bash)
