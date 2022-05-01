@@ -36,6 +36,12 @@ class OrTable(models.Model):
 ...
 ```
 
+### vterm (bash)
+```bash
+python manage.py makemigrations homepage
+python manage.py migrate
+```
+
 ## 2. Displaying actual information on url/homepage/available
 
 The next steps will require a lot of testing, so I wanted the page to be visually more informative. First of all, I changed the HTML to list every available course. Here, the *ul* tag refers to an *unordered list* and *li* tag refers to a *list item*.
@@ -86,3 +92,25 @@ Explanation of above function:
 1. I initialize selected_courses so that I am guaranteed to have a list no matter.
 2. I then check if the method is POST. This is a way to chech whether the reason we are on this page is through clicking a form with "post" method.
 3. For all of the courses we get from that post action (request.POST.getlist("courses")), I get the name of the CourseDataBase object with the appropriate course ID. The "courses" comes from "homepage/templates/homepage/index.html" where all checkboxes have the name "courses".
+
+
+## 3. Calculating the courses that you can take, given the list of courses you have taken
+
+Before everything, you will realize the admin page is a bit difficult to read. For human readibility, I added the following function inside OrTable definition. Such that:
+
+### homepage/models.py
+```python
+class OrTable(models.Model):
+    prereq = models.ForeignKey(
+        CourseDataBase, on_delete=models.PROTECT, related_name="prereq_or"
+    )
+    course = models.ForeignKey(
+        CourseDataBase, on_delete=models.PROTECT, related_name="course_or"
+    )
+    group_id = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"[{self.group_id}] {self.course.name} <-- {self.prereq.name}"
+```
+
+Now it will be easier to track what line belongs to what prerequisite and what its group id is.
