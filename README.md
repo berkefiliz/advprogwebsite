@@ -103,7 +103,7 @@ Explanation of above function:
 
 ## 3. Calculating the courses that you can take, given the list of courses you have taken
 
-Before everything, you will realize the admin page is a bit difficult to read. For human readibility, I added the following function inside OrTable definition. Such that:
+Before everything, you will realize the admin page is a bit difficult to read. For human readibility, I added the following function inside OrTable and AndTable definitions. Such that:
 
 ### homepage/models.py
 ```python
@@ -118,6 +118,17 @@ class OrTable(models.Model):
 
     def __str__(self):
         return f"[{self.group_id}] {self.course.name} <-- {self.prereq.name}"
+        
+class AndTable(models.Model):
+    prereq = models.ForeignKey(
+        CourseDataBase, on_delete=models.CASCADE, related_name="prereq_and"
+    )
+    course = models.ForeignKey(
+        CourseDataBase, on_delete=models.CASCADE, related_name="course_and"
+    )
+
+    def __str__(self):
+        return f"{self.course.name} <-- {self.prereq.name}"
 ```
 
 Now it will be easier to track what line belongs to what prerequisite and what its group id is.
