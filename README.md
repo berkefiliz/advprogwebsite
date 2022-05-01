@@ -4,7 +4,7 @@ Hello there! I am sorry it could not be a productive session because I got stuck
 
 Of course, change whatever you want. I don't want to do your assignment. But use as much ideas from this as you want!
 
-## The And/Or Table Structure
+## 1. The And/Or Table Structure
 
 I have thought a lot about what the best way to approach this would be, and I could finally come up with an idea. The issue we were having was with prerequisites such as "(A or B) and (C or D)". I figured adding an extra "group id" could fix the issue. Here is what Or Table would look like:
 
@@ -22,9 +22,8 @@ The implementation should be as folowing:
 - I set the default value to 1, so that you do not have to fill it in every time.
 - **If you already have a lot of OrTable rows, you will need to do a migration.** If there are 2-3 entries, the effort is not worth it. Just delete the entries, copy the code, then run it. You can find migration stuff on [Django Tutorials](https://docs.djangoproject.com/en/4.0/intro/tutorial02/).
 
+### homepage/models.py
 ```python
-# homepage/models.py
-
 ...
 class OrTable(models.Model):
     prereq = models.ForeignKey(
@@ -36,3 +35,34 @@ class OrTable(models.Model):
     group_id = models.IntegerField(default=1)
 ...
 ```
+
+## 2. Displaying actual information on url/homepage/available
+
+The next steps will require a lot of testing, so I wanted the page to be visually more informative. First of all, I changed the HTML to list every available course. Here, the *ul* tag refers to an *unordered list* and *li* tag refers to a *list item*.
+
+The code below should display all selected courses into a list. Of course, **they are only numbers so far!**
+
+### homepage/templates/homepage/available.html
+```html
+<h3>Available courses</h3>
+<ul>
+{% for course in selected %}
+  <li>{{ course }}</li>
+{% endfor %}
+</ul>
+```
+
+In order to turn "course" into text, we should pass a list of strings to the view. We will do it by sending queries to Course Database. Before we do that, we would like to ensure the selected object exists no matter what. To do so, we just need to define it before reading the POST data:
+
+### homepage/views.py
+```python
+...
+def available(request):
+    selected_courses = []
+    if request.method == "POST":
+        selected_courses = request.POST.getlist("courses")
+    context = {"selected": selected_courses}
+    return render(request, "homepage/available.html", context)
+```
+
+### 
