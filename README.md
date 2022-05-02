@@ -224,9 +224,9 @@ I will switch to some CSS work because the last function has burnt all gears in 
 ### homepage/templates/homepage/header.html
 
 ```html
-<div id="header">
+<header>
   <h1 id="header-text" class="centered">AUC Course Thingy</h1>
-</div>
+</header>
 ```
 
 Now, add the following code in the beginning of other two HTML files. That will get the HTML contents from header.html and put it there.
@@ -256,12 +256,12 @@ I have also added some class and IDs to Index HTML to prepare for styling:
     {% if courses %}
       {% for course in courses %}
         <input class="checkbox" type="checkbox" name="courses" value="{{course.id}}" >
-        <label for="courses"> {{course.name}} </label><br>
+        <label class="checkbox-label" for="courses"> {{course.name}} </label><br>
       {% endfor %}
     {% else %}
       <p> No courses available </p>
     {% endif %}
-  <input id="button-submit" type="submit" value="Send">
+  <input id="button-submit" type="submit" value="Submit">
   </form>
 </div>
 ```
@@ -283,7 +283,82 @@ For every page you want to "include" these stylings, you need to have a <link> t
 ```html
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}">
+...
 ```
 
 You should not see any changes yet. **Every time you add or remove a static file, you need to stop and restart the server.** Once you restart once, it should pick up changes automatically. If it does not, force-refresh the webpage with Ctrl+F5 or Ctrl+R or whatever Mac alternatice there is for that. If you do that now, you should see that everything has red border around them!
 
+Okay, now is the time to make stuff actually pretty. Go back to "homepage/static/homepage/style.css" and **delete everything inside it.**
+
+I will start with changing the font because I really dislike the default fonts for the browser. Let's go for something more modern. I often get my fonts from [Google Fonts](https://fonts.google.com/).
+
+### homepage/static/homepage/style.css
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+html {
+    font-family: "Ubuntu";
+}
+```
+
+Then, I would like to center the elements. The dot "." implies that we are working with a class.
+
+```css
+...
+.centered {
+    margin-left: 15%;
+}
+```
+
+I will also change the header to be the red color of AUC, adding margin and paddings, while changing the font color. Lastly, I will work on the content itself. The final CSS file should look something like this:
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+* {
+    margin: 0;
+}
+
+:root {
+    --dark: #8b0000;
+    --light: #fee;
+}
+
+html {
+    font-family: "Ubuntu";
+}
+
+.centered {
+    margin-left: 15%;
+}
+
+header {
+    background-color: var(--dark);
+    color: var(--light);
+    padding: 20px 0;
+}
+
+#content {
+    margin-top: 30px;
+}
+#content .checkbox {
+    width: 50px;
+    margin-top: 10px;
+    accent-color: var(--dark);
+}
+
+#button-submit {
+    margin-top: 40px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+#button-submit:hover {
+    background-color: var(--dark);
+    color: var(--light);
+}
+```
+
+If you have any questions about the CSS, let me know!
