@@ -43,6 +43,34 @@ class AndTable(models.Model):
     )
 ```
 
+It was becoming really difficult to keep track of anything in the admin page, so I added the following function inside OrTable and AndTable definitions. This way you can clearly see the group, prerequisite and course of both databases' objects Such that:
+
+### homepage/models.py
+```python
+class OrTable(models.Model):
+    prereq = models.ForeignKey(
+        CourseDataBase, on_delete=models.PROTECT, related_name="prereq_or"
+    )
+    course = models.ForeignKey(
+        CourseDataBase, on_delete=models.PROTECT, related_name="course_or"
+    )
+    group_id = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"[{self.group_id}] {self.course.name} <-- {self.prereq.name}"
+        
+class AndTable(models.Model):
+    prereq = models.ForeignKey(
+        CourseDataBase, on_delete=models.CASCADE, related_name="prereq_and"
+    )
+    course = models.ForeignKey(
+        CourseDataBase, on_delete=models.CASCADE, related_name="course_and"
+    )
+
+    def __str__(self):
+        return f"{self.course.name} <-- {self.prereq.name}"
+```
+
 ### vterm (bash)
 ```bash
 python manage.py makemigrations homepage
@@ -103,32 +131,6 @@ Explanation of above function:
 
 ## 3. Calculating the courses that you can take, given the list of courses you have taken
 
-Before everything, you will realize the admin page is a bit difficult to read. For human readibility, I added the following function inside OrTable and AndTable definitions. Such that:
 
-### homepage/models.py
-```python
-class OrTable(models.Model):
-    prereq = models.ForeignKey(
-        CourseDataBase, on_delete=models.PROTECT, related_name="prereq_or"
-    )
-    course = models.ForeignKey(
-        CourseDataBase, on_delete=models.PROTECT, related_name="course_or"
-    )
-    group_id = models.IntegerField(default=1)
-
-    def __str__(self):
-        return f"[{self.group_id}] {self.course.name} <-- {self.prereq.name}"
-        
-class AndTable(models.Model):
-    prereq = models.ForeignKey(
-        CourseDataBase, on_delete=models.CASCADE, related_name="prereq_and"
-    )
-    course = models.ForeignKey(
-        CourseDataBase, on_delete=models.CASCADE, related_name="course_and"
-    )
-
-    def __str__(self):
-        return f"{self.course.name} <-- {self.prereq.name}"
-```
 
 Now it will be easier to track what line belongs to what prerequisite and what its group id is.
