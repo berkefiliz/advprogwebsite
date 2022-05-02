@@ -216,3 +216,26 @@ def available(request):
 ```
 
 You can later alter the last function so that you pass more information about the courses!
+
+## 4. Making things pretty
+
+I will switch to some CSS work because the last function has burnt all gears in my brain :/ Before that though, let's make a header for the webpage. Create the file "homepage/templates/homepage/header.html". I am keeping it separate because we do not want to copy paste the same thing to both of our views.
+
+### homepage/templates/homepage/header.html
+
+```html
+<div id="header">
+  <h1 id="header-text" class="centered">AUC Course Thingy</h1>
+</div>
+```
+
+Now, add the following code in the beginning of other two HTML files. That will get the HTML contents from header.html and put it there.
+
+### homepage/templates/homepage/available.html AND homepage/templates/homepage/index.html
+
+```html
+{% block header %}
+   {% include "./header.html" %}
+{% endblock %}
+
+```
