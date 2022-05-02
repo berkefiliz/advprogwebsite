@@ -342,10 +342,14 @@ header {
 #content {
     margin-top: 30px;
 }
-#content .checkbox, li {
+
+#content .checkbox {
     width: 50px;
-    margin-top: 10px;
     accent-color: var(--dark);
+}
+
+#content .checkbox, li, .warning {
+    margin-top: 10px
 }
 
 .button {
@@ -404,6 +408,111 @@ It's long overdue, so let's add a go back button:
   {% endfor %}
   </ul>
 
+  <form action="../">
+    <input type="submit" value="Back" class="button"/>
+  </form>
+</div>
+```
+
+The first idea on my mind is to separate the courses you have already selected from the list of courses you can take. This will require a lot of work again, in multiple files. I will start with views.py:
+
+### homepage/views.py
+```python
+...
+def available(request):
+    available_courses = []
+    if request.method == "POST":
+        # Get IDs of all courses
+        all_course_ids = CourseDataBase.objects.all().values_list(
+            "id", flat=True
+        )
+        # Get IDs of the courses selected in the previous page
+        selected_ids = [
+            get_object_or_404(CourseDataBase, pk=course_id).id
+            for course_id in request.POST.getlist("courses")
+        ]
+        # Decide if the student can take them
+        can_take = [
+            can_take_course(int(course), set(selected_ids))
+            for course in all_course_ids
+        ]
+        # Get the names of available courses
+        available_courses = [
+            CourseDataBase.objects.get(id=course_id).name
+            for i, course_id in enumerate(all_course_ids)
+            if can_take[i]
+            if CourseDataBase.objects.get(id=course_id).id not in selected_ids
+        ]
+        # Get the names of already taken courses
+        selected_courses = [
+            CourseDataBase.objects.get(id=course_id).name
+            for course_id in selected_ids
+        ]
+    context = {
+        "available_courses": available_courses,
+        "selected_courses": selected_courses,
+    }
+    return render(request, "homepage/available.html", context)
+```
+
+Visually nothing has changed. Let's work on it now:
+
+### homepage/templates/homepage/available.html
+```html
+{% block header %}
+   {% include "./header.html" %}
+{% endblock %}
+
+<div id="content" class="centered">
+  <p>Available courses</p>
+  <ul>
+  {% for course in available_courses %}
+    <li>{{ course }}</li>
+  {% endfor %}
+  </ul>
+  <br>
+  <p>Courses already taken</p>
+  <ul>
+  {% for course in selected_courses %}
+    <li>{{ course }}</li>
+  {% endfor %}
+  </ul>
+  <form action="../">
+    <input type="submit" value="Back" class="button"/>
+  </form>
+</div>
+```
+
+The very last thing I want to do here is this: Imagine someone clicking on Submit on homepage with no selected values. Then the "selected values" part will be empty. Similarly, if you select everything, then the available courses section will be empty. I want it to display some text instead:
+
+### homepage/templates/homepage/available.html
+```html
+{% block header %}
+   {% include "./header.html" %}
+{% endblock %}
+
+<div id="content" class="centered">
+  <p>Available courses</p>
+  {% if available_courses %}
+    <ul>
+    {% for course in available_courses %}
+      <li>{{ course }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p class="warning"><i>No more courses available!</i></p>
+  {% endif  %}
+  <br>
+  <p>Courses already taken</p>
+  {% if selected_courses %}
+    <ul>
+    {% for course in selected_courses %}
+      <li>{{ course }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p class="warning"><i>No courses were selected!</i></p>
+  {% endif  %}
   <form action="../">
     <input type="submit" value="Back" class="button"/>
   </form>
