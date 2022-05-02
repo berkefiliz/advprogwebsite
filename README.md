@@ -239,3 +239,29 @@ Now, add the following code in the beginning of other two HTML files. That will 
 {% endblock %}
 
 ```
+
+I have also added some class and IDs to Index HTML to prepare for styling:
+
+### homepage/templates/homepage/index.html
+
+```html
+{% block header %}
+   {% include "./header.html" %}
+{% endblock %}
+
+<div id="content" class="centered">
+  <p>Select the courses you have already taken</p>
+  <form method='post' action="available/">
+    {% csrf_token %}
+    {% if courses %}
+      {% for course in courses %}
+        <input class="checkbox" type="checkbox" name="courses" value="{{course.id}}" >
+        <label for="courses"> {{course.name}} </label><br>
+      {% endfor %}
+    {% else %}
+      <p> No courses available </p>
+    {% endif %}
+  <input id="button-submit" type="submit" value="Send">
+  </form>
+</div>
+```
