@@ -294,7 +294,7 @@ For every page you want to "include" these stylings, you need to have a <link> t
 ...
 ```
 
-You should not see any changes yet. **Every time you add or remove a static file, you need to stop and restart the server.** Once you restart once, it should pick up changes automatically. If it does not, force-refresh the webpage with Ctrl+F5 or Ctrl+R or whatever Mac alternatice there is for that. If you do that now, you should see that everything has red border around them!
+You should not see any changes yet. **Every time you add or remove a static file, you need to stop and restart the server.** Once you restart the server, it should pick up changes automatically. If it does not, force-refresh the webpage with Ctrl+F5 or Ctrl+R or whatever Mac alternative there is for that. If you do that now, you should see that everything has red border around them!
 
 Okay, now is the time to make stuff actually pretty. Go back to "homepage/static/homepage/style.css" and **delete everything inside it.**
 
