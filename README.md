@@ -155,7 +155,7 @@ This was genuinely painful. I left comments to explain how the code works but do
 </ul>
 ```
 
-Notice that there was no change for imports or home() in the followinf code:
+Notice that there was no change for imports or home() in the following code:
 
 ### homepage/views.py
 ```python
