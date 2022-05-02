@@ -342,7 +342,7 @@ header {
 #content {
     margin-top: 30px;
 }
-#content .checkbox {
+#content .checkbox, li {
     width: 50px;
     margin-top: 10px;
     accent-color: var(--dark);
@@ -381,4 +381,31 @@ Oh, I realized I forgot about available.html, so here it is:
   </ul>
 </div>
 
+```
+
+I will go back to styling but it looks fine for now. Let's get more functionality done:
+
+## 5. Making available.html better
+
+It's long overdue, so let's add a go back button:
+
+### homepage/templates/homepage/available.html
+
+```html
+{% block header %}
+   {% include "./header.html" %}
+{% endblock %}
+
+<div id="content" class="centered">
+  <p>Available courses</p>
+  <ul>
+  {% for course in available_courses %}
+    <li>{{ course }}</li>
+  {% endfor %}
+  </ul>
+
+  <form action="../">
+    <input type="submit" value="Back" class="button"/>
+  </form>
+</div>
 ```
