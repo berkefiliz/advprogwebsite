@@ -261,7 +261,7 @@ I have also added some class and IDs to Index HTML to prepare for styling:
     {% else %}
       <p> No courses available </p>
     {% endif %}
-  <input id="button-submit" type="submit" value="Submit">
+  <input class="button" type="submit" value="Send">
   </form>
 </div>
 ```
@@ -302,7 +302,7 @@ html {
 }
 ```
 
-Then, I would like to center the elements. The dot "." implies that we are working with a class.
+Then, I would like to center the elements. The dot "." implies that we are working with a class. The hash "#" implies that it's an id.
 
 ```css
 ...
@@ -348,17 +348,37 @@ header {
     accent-color: var(--dark);
 }
 
-#button-submit {
+.button {
     margin-top: 40px;
     border: none;
     padding: 10px;
     cursor: pointer;
     border-radius: 10px;
 }
-#button-submit:hover {
+.button:hover {
     background-color: var(--dark);
     color: var(--light);
 }
 ```
 
 If you have any questions about the CSS, let me know!
+
+Oh, I realized I forgot about available.html, so here it is:
+
+### homepage/templates/homepage/available.html
+
+```html
+{% block header %}
+   {% include "./header.html" %}
+{% endblock %}
+
+<div id="content" class="centered">
+  <p>Available courses</p>
+  <ul>
+  {% for course in available_courses %}
+    <li>{{ course }}</li>
+  {% endfor %}
+  </ul>
+</div>
+
+```
