@@ -265,3 +265,25 @@ I have also added some class and IDs to Index HTML to prepare for styling:
   </form>
 </div>
 ```
+
+Now it's time to finally work on CSS! There are multiple things to do. First, of course, you create a static file. (These are fines that will never be affected by Django. CSS files, images and audio files are examples for that.) The file should be at "homepage/static/homepage/style.css"
+
+### homepage/static/homepage/style.css
+
+```css
+* {
+    border: 1px solid red;
+}
+```
+
+For every page you want to "include" these stylings, you need to have a <link> tag somewhere, plus the "load static" command for Django. Since you have a header in every page already, I recommend simply placing this at the top of your header.html file:
+
+### homepage/templates/homepage/header.html
+
+```html
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}">
+```
+
+You should not see any changes yet. **Every time you add or remove a static file, you need to stop and restart the server.** Once you restart once, it should pick up changes automatically. If it does not, force-refresh the webpage with Ctrl+F5 or Ctrl+R or whatever Mac alternatice there is for that. If you do that now, you should see that everything has red border around them!
+
