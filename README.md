@@ -4,6 +4,8 @@ Hello there! I am sorry it could not be a productive session because I got stuck
 
 Of course, change whatever you want. I don't want to do your assignment. But use as much ideas from this as you want!
 
+Note: If I put ellipsis (...) somewhere in the code, there is probably a large chunk of code I did not change. I recommend double-checking everything and run the code after every 1-2 code blocks. That way you can identify errors earlier. I made sure that everything works at the end of every section so you can go in bulks as well.
+
 ## 1. The And/Or Table Structure
 
 I have thought a lot about what the best way to approach this would be, and I could finally come up with an idea. The issue we were having was with prerequisites such as "(A or B) and (C or D)". I figured adding an extra "group id" could fix the issue. Here is what Or Table would look like:
@@ -43,7 +45,7 @@ class AndTable(models.Model):
     )
 ```
 
-It was becoming really difficult to keep track of anything in the admin page, so I added the following function inside OrTable and AndTable definitions. This way you can clearly see the group, prerequisite and course of both databases' objects Such that:
+It was becoming really difficult to keep track of anything in the admin page, so I added \_\_str\_\_ functions following function inside OrTable and AndTable definitions. This way you can clearly see the group, prerequisite and course of both databases' objects Such that:
 
 ### homepage/models.py
 ```python
@@ -70,6 +72,8 @@ class AndTable(models.Model):
     def __str__(self):
         return f"{self.course.name} <-- {self.prereq.name}"
 ```
+
+**DO NOT FORGET TO MIGRATE THE DATABASE!!**
 
 ### vterm (bash)
 ```bash
@@ -131,6 +135,84 @@ Explanation of above function:
 
 ## 3. Calculating the courses that you can take, given the list of courses you have taken
 
+This was genuinely painful. I left comments to explain how the code works but do not hesitate to ask me how it works!
+
+### homepage/templates/homepage/available.html
+```html
+<h3>Available courses</h3>
+<ul>
+{% for course in available_courses %}
+  <li>{{ course }}</li>
+{% endfor %}
+</ul>
+```
+
+Notice that there was no change for imports or home() in the followinf code:
+
+### homepage/views.py
+```python
+...
+def can_take_course(course_id, selected_ids):
+    """
+    Take a course ID, and IDs of selected courses, return whether the selected
+    courses satisfy as prerequisites for the course ID
+    """
+    # Get the "and" prerequisites
+    and_list = set(
+        AndTable.objects.filter(course=course_id).values_list(
+            "prereq", flat=True
+        )
+    )
+    if and_list:
+        # Return false if one of these prerequisites are selected
+        for course in and_list:
+            if course not in selected_ids:
+                return False
+    # Get the "or" prerequisites
+    or_list = OrTable.objects.filter(course=course_id)
+    if or_list:
+        # Get the groups (1, 2, 3, ...) for this or selection
+        groups = set(or_list.values_list("group_id", flat=True))
+        for group in groups:
+            # For every group, get a set of courses
+            or_set = set(
+                OrTable.objects.filter(
+                    course=course_id, group_id=group
+                ).values_list("prereq", flat=True)
+            )
+            # If no courses from this list is selected,, return falase
+            if not or_set.intersection(selected_ids):
+                return False
+    # If all "false" conditions fail, return True
+    return True
 
 
-Now it will be easier to track what line belongs to what prerequisite and what its group id is.
+def available(request):
+    available_courses = []
+    if request.method == "POST":
+        # Get IDs of all courses
+        all_course_ids = CourseDataBase.objects.all().values_list(
+            "id", flat=True
+        )
+        # Get IDs of the courses selected in the previous page
+        selected_ids = [
+            get_object_or_404(CourseDataBase, pk=course_id).id
+            for course_id in request.POST.getlist("courses")
+        ]
+        # Decide if the student can take them
+        can_take = [
+            can_take_course(int(course), set(selected_ids))
+            for course in all_course_ids
+        ]
+        # Get the names of available courses
+        available_courses = [
+            CourseDataBase.objects.get(id=course_id).name
+            for i, course_id in enumerate(all_course_ids)
+            if can_take[i]
+        ]
+    context = {"available_courses": available_courses}
+    return render(request, "homepage/available.html", context)
+
+```
+
+You can later alter the last function so that you pass more information about the courses!
