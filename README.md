@@ -23,7 +23,7 @@ I have thought a lot about what the best way to approach this would be, and I co
 | 1  | 1  | 2  | 1  |
 | 2  | 1  | 3  | 1  |
 | 3  | 1  | 4  | 2  |
-| 3  | 1  | 5  | 2  |
+| 4  | 1  | 5  | 2  |
 
 Notice how A and B have the Group ID 1 while C and D have the Group ID 2. At the same time, these are prerequisites for the same exact course.
 
