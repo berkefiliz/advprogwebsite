@@ -1,10 +1,14 @@
-## Introduction
+# Introduction
+
+## Some words
 
 Hello there! I am sorry it could not be a productive session because I got stuck on a very simple thing. I have decided to create this file for you so that I can further explain what the further steps are. **Everything I put here is in chronological order**, so that you can commit them whenever you wish. I will try to add as much explanation as I can, but feel free to ask if you need help!
 
 Of course, change whatever you want. I don't want to do your assignment. But use as much ideas from this as you want!
 
 Note: If I put ellipsis (...) somewhere in the code, there is probably a large chunk of code I did not change. I recommend double-checking everything and run the code after every 1-2 code blocks. That way you can identify errors earlier. I made sure that everything works at the end of every section so you can go in bulks as well.
+
+# The code
 
 ## 1. The And/Or Table Structure
 
@@ -518,3 +522,16 @@ The very last thing I want to do here is this: Imagine someone clicking on Submi
   </form>
 </div>
 ```
+
+# What now?
+
+## Notes
+
+That is all I could do before I got tired of it and I hope it is helpful for you too! Don't hesitate to ask any questions. If you want to meet again to go over this and potentially add more stuff, let me know!
+
+## Ideas to go forward
+
+Here is a list of ideas if you want to work further on this:
+
+- Show more information such as majors, level and credit on the list. You may need to use table tags (and therefore td, tr and th) instead of the unordered list we use. You will also need to do some editing on views.py to pass relevant data.
+- Handle long data. I tested this with 10 courses but I know you will have a lot more. If you do not want people to scroll down to reach the back button, you can use the CSS property called "overflow". If you give a div some height and say "overflow-y: auto", then it will become scrollable when its content is overflowing. Something to look into :/
