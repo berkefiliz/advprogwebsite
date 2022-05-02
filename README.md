@@ -539,3 +539,4 @@ Here is a list of ideas if you want to work further on this:
 
 - Show more information such as majors, level and credit on the list. You may need to use table tags (and therefore td, tr and th) instead of the unordered list we use. You will also need to do some editing on views.py to pass relevant data.
 - Handle long data. I tested this with 10 courses but I know you will have a lot more. If you do not want people to scroll down to reach the back button, you can use the CSS property called "overflow". If you give a div some height and say "overflow-y: auto", then it will become scrollable when its content is overflowing. Something to look into :/
+- Still it's overwhelming to see all options together, so some way to filter the selection could be helpful. For example, a dropdown with 3 majors to display only those majors is more than enough!
